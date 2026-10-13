@@ -1,0 +1,15 @@
+relationship f9a0e024-63dc-45c4-8cfc-ff893b337de3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Projetos.'Data Ativação Lead'
+	toColumn: LocalDateTable_c2872a25-0980-48ee-a678-7ba4e27f5957.Date
+
+relationship 63493e27-3825-4fdc-9b45-8051f6fc82cb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Projetos.'Data Início'
+	toColumn: LocalDateTable_cfcab192-73d5-40d0-9d3b-35c31a8f3ae4.Date
+
+relationship b22cafa3-65e7-4078-9f79-f010a6a440b5
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Projetos.'Data Termino'
+	toColumn: LocalDateTable_8174081a-af3c-48bc-a41d-6cfb2fe13682.Date
+

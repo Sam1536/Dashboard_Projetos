@@ -1,0 +1,64 @@
+table _Medidas
+	lineageTag: 7870f7ca-3f62-4887-b798-67387e06853c
+
+	measure Oportunidades = COUNTROWS(Projetos)
+		formatString: #,0
+		lineageTag: 5d6f2224-73c6-4ec8-b878-fe481a577ae9
+
+	measure 'Projetos Fechados' =
+			
+			CALCULATE(COUNTROWS(Projetos), Projetos[Data Início] <> BLANK())
+		formatString: #,0
+		lineageTag: c93abfd8-059b-4e5c-a20b-fecf9809e2c4
+
+	measure 'Total Leads' = [Oportunidades] - [Projetos Fechados]
+		formatString: #,0
+		lineageTag: 51849f60-5d52-4340-a995-c9e819893616
+
+	measure 'Total Orçado' =
+			
+			CALCULATE(
+			    SUM(
+			        Projetos[Valor Orçado]),
+			        Projetos[Data Início] <> BLANK()
+			        //Projetos[Status] = "Finalizado"
+			)
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: d0201b61-fb9d-426f-b904-6fbbf446fba8
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure 'Total Pago' =
+			
+			CALCULATE(
+			    SUM(
+			        Projetos[Valor Negociado]),
+			        Projetos[Data Início] <> BLANK()
+			)
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: 323219bf-f627-4565-bc64-f2161ca0126c
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure 'Total Desconto' = [Total Orçado] - [Total Pago]
+		formatString: "R$"\ #,0;-"R$"\ #,0;"R$"\ #,0
+		lineageTag: 8e279b0a-b07f-45a0-931a-0f9971667aef
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure 'Total Orçado Geral' = SUM(Projetos[Valor Orçado])
+		formatString: 0
+		lineageTag: 8b9fe8cd-5366-410e-a00a-8ee92afe7a12
+
+	partition _Medidas = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Coluna 1", type text}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Coluna 1"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_ResultType = Table
+

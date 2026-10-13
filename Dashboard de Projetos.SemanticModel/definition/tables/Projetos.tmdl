@@ -1,0 +1,123 @@
+table Projetos
+	lineageTag: de3ee223-257c-4875-b953-adc630f32cbf
+
+	column 'Código Projeto'
+		dataType: string
+		lineageTag: d21ff07d-30c0-429b-80c6-7c88acc27b66
+		summarizeBy: none
+		sourceColumn: Código Projeto
+
+		annotation SummarizationSetBy = Automatic
+
+	column Setor
+		dataType: string
+		lineageTag: 8d2f4479-ede0-47f3-b957-065ec5062419
+		summarizeBy: none
+		sourceColumn: Setor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor Orçado'
+		dataType: int64
+		formatString: 0
+		lineageTag: bbfc02ed-fc41-4da3-8339-aa201d1d1785
+		summarizeBy: sum
+		sourceColumn: Valor Orçado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor Negociado'
+		dataType: int64
+		formatString: 0
+		lineageTag: 46ade3ea-5a68-464a-ac7b-6a43077d1410
+		summarizeBy: sum
+		sourceColumn: Valor Negociado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Desconto Concedido'
+		dataType: int64
+		formatString: 0
+		lineageTag: 33f97904-7e22-47ef-af25-893f473fe8d4
+		summarizeBy: sum
+		sourceColumn: Desconto Concedido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data Ativação Lead'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0290b718-7aee-411f-a63b-a02066b700f2
+		summarizeBy: none
+		sourceColumn: Data Ativação Lead
+
+		variation Variation
+			isDefault
+			relationship: f9a0e024-63dc-45c4-8cfc-ff893b337de3
+			defaultHierarchy: LocalDateTable_c2872a25-0980-48ee-a678-7ba4e27f5957.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data Início'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 15617abf-b6c1-431b-94b5-8a1c4f625d73
+		summarizeBy: none
+		sourceColumn: Data Início
+
+		variation Variation
+			isDefault
+			relationship: 63493e27-3825-4fdc-9b45-8051f6fc82cb
+			defaultHierarchy: LocalDateTable_cfcab192-73d5-40d0-9d3b-35c31a8f3ae4.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Data Termino'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: a6baae28-a319-4d72-8c13-ccfa7ed970e2
+		summarizeBy: none
+		sourceColumn: Data Termino
+
+		variation Variation
+			isDefault
+			relationship: b22cafa3-65e7-4078-9f79-f010a6a440b5
+			defaultHierarchy: LocalDateTable_8174081a-af3c-48bc-a41d-6cfb2fe13682.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Responsável
+		dataType: string
+		lineageTag: 152a905e-9de3-4c7e-b11d-4674e5ff081d
+		summarizeBy: none
+		sourceColumn: Responsável
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 997839ac-5e05-431a-8f31-506a75c1484e
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Projetos = m
+		mode: import
+		source =
+				let
+				    Fonte = Excel.Workbook(File.Contents("C:\Users\a-agn\Documents\PoweBi Exercícios e Outros\PowerBI_Impressionador_Hashtag_2023 Materia\Importação e Tratamento de BD-Power Query\Intensivão de Power BI - Edição 2.0\Intensivão de Power BI - Aula 4\Base Projetos.xlsx"), null, true),
+				    Projetos_Sheet = Fonte{[Item="Projetos",Kind="Sheet"]}[Data],
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Projetos_Sheet, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"Código Projeto", type text}, {"Setor", type text}, {"Valor Orçado", Int64.Type}, {"Valor Negociado", Int64.Type}, {"Desconto Concedido", Int64.Type}, {"Data Ativação Lead", type date}, {"Data Início", type date}, {"Data Termino", type date}, {"Responsável", type text}, {"Status", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+
